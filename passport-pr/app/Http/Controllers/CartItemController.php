@@ -3,32 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Cart;
+use App\Models\CartItem;
 
-class CartController extends Controller
+class CartItemController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    
-    //  確保 carts 有東西
     public function index()
     {
-        return view('mail.index');
-        // 確認cart有資料
-        $cart = DB::table('carts')->get()->first();
-        if(empty($cart)){
-            DB::table('carts')->insert(['created_at' => now(), 'updated_at' => now()]);
-            $cart = DB::table('carts')->get()->first();
-        }
-        
-        // 撈出 cart_id 相同的 cart_items
-        $cartItems = DB::table('cart_items')->where('cart_id', $cart->id)->get();
-        $cart = collect($cart);
-        $cart['items'] = collect($cartItems);
-
-        return response($cart);
+        //
     }
 
     /**
@@ -49,7 +36,12 @@ class CartController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $form = $request->all();
+        $cart = Cart::find($form['cart_id']);
+        $result = $cart->cartItems()->create(['product_id' => $form['product_id'],
+                                              'quantity' => $form['quantity']]);
+
+        return response()->json($result);
     }
 
     /**
@@ -60,13 +52,7 @@ class CartController extends Controller
      */
     public function show($id)
     {
-        // 透過關聯cart cartItems建立一筆資料
-        $form = $request->all();
-        $cart = Cart::find($form['cart_id']);
-        $result = $cart->cartItems()->create(['product_id' => $form['product_id'],
-                                              'quantity' => $form['quantity']]);
-        
-        return response()->json($result);
+        //
     }
 
     /**
@@ -89,6 +75,11 @@ class CartController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // 更新 cart_items 的數量
+        $form = $request->all();
+        DB::table('cart_items')->where('id', $id)->update(['quantity' => $form['quantity'],
+                                                           'updated_at' => now()]);
+        return response()->json(true);
     }
 
     /**
@@ -99,5 +90,8 @@ class CartController extends Controller
      */
     public function destroy($id)
     {
+        // 真刪除
+        DB::table('cart_items')->where('id', $id)->delete();
+        return response()->json(true);
     }
 }
