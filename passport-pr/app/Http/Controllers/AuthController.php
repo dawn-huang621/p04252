@@ -37,8 +37,7 @@ class AuthController extends Controller
         }
         // 建立token
         $user = $request->user();
-        $tokenResult = $user->createToken('Token')->accessToken;
-        // $token = $user->createToken('MyToken')->accessToken;
+        $tokenResult = $user->createToken('Token');
         $tokenResult->token->save();
 
         return response(['token' => $tokenResult->accessToken]);
@@ -47,12 +46,8 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
-        $user = User::find(1);
-    $token = $user->createToken('MyToken')->accessToken;
-        dd($request->user, $request, $token);
         $user = Auth::guard('api')->user();
-        dd($user);
-        return response([$request->user, 'ddddd']);
+        return response($request->user);
     }
 
 }
