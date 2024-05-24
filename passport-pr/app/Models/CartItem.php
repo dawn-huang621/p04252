@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CartItemModel extends Model
+class CartItem extends Model
 {
     use HasFactory;
 
-    protected $guarded = ['quantity']; //
-    protected $hidden = ['updated_at']; //
+    // protected $guarded = ['quantity']; //
+    // protected $hidden = ['updated_at']; //
     protected $appends = ['current_price']; //
 
     public function getCurrentPriceAttribute()

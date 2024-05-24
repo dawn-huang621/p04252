@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use DB;
 
 class CartController extends Controller
 {
@@ -15,8 +16,6 @@ class CartController extends Controller
     //  確保 carts 有東西
     public function index()
     {
-        return view('mail.index');
-        // 確認cart有資料
         $cart = DB::table('carts')->get()->first();
         if(empty($cart)){
             DB::table('carts')->insert(['created_at' => now(), 'updated_at' => now()]);

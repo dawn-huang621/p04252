@@ -19,6 +19,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::resource('carts', 'CartController');
+Route::resource('cart_items', 'CartItemController');
+Route::resource('products', 'ProductController');
+Route::post('signup', 'AuthController@signup');
+Route::post('login', 'AuthController@login');
+
+Route::group(['middleware' => 'auth:api'], function(){
+    Route::get('user', 'AuthController@user');
+});
+
 Route::get('/sendMail', function () {
     Mail::to('recipient@example.com')->send(new FirstMail());
 });
