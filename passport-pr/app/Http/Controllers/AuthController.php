@@ -41,13 +41,17 @@ class AuthController extends Controller
         $tokenResult->token->save();
 
         return response(['token' => $tokenResult->accessToken]);
-        dump($tokenResult);
+    }
+
+    public function logout(Request $request)
+    {
+        $request->user()->token()->revoke();
+        return response(['message' => '成功登出']);
     }
 
     public function user(Request $request)
     {
         $user = Auth::guard('api')->user();
-        return response($request->user);
+        return response($request->user());
     }
-
 }

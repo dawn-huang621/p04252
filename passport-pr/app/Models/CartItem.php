@@ -10,8 +10,9 @@ class CartItem extends Model
     use HasFactory;
 
     // protected $guarded = ['quantity']; //
+    protected $guarded = ['']; //
     // protected $hidden = ['updated_at']; //
-    protected $appends = ['current_price']; //
+    // protected $appends = ['current_price']; //
 
     public function getCurrentPriceAttribute()
     {
