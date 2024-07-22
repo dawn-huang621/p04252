@@ -38,9 +38,6 @@ class Cart extends Model
         }
         // 購物車商品轉訂單商品
         foreach($this->cartItems as $cartItem) {
-            Log::info(print_r($cartItem));
-            Log::info(print_r($cartItem->product_id));
-            Log::info(print_r($cartItem->product->price));
             $order->orderItems()->create([
                 'product_id' => $cartItem->product_id,
                 'price' => $cartItem->product->price * $this->rate,
