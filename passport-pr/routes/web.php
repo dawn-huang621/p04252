@@ -15,10 +15,12 @@ use App\Mail\FirstMail;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+Route::group(['middleware' => 'check.dirty'], function () {
+    Route::resource('products', 'ProductController');
 });
-Route::resource('products', 'ProductController');
 Route::post('signup', 'AuthController@signup');
 Route::post('login', 'AuthController@login');
 
