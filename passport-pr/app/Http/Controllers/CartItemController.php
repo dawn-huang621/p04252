@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use DB;
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Models\Product;
+use App\Http\Requests\UpdateCartItems;
+use Illuminate\Support\Facades\Validator;
 
 class CartItemController extends Controller
 {
@@ -37,10 +40,30 @@ class CartItemController extends Controller
      */
     public function store(Request $request)
     {
-        $form = $request->all();
-        $cart = Cart::find($form['cart_id']);
-        $result = $cart->cartItems()->create(['product_id' => $form['product_id'],
-                                              'quantity' => $form['quantity']]);
+        $message = [
+            'required' => ':attribut 是必要的',
+            'between' => ':attribute 的輸入 :input 不在 :min 和 :max 之間',
+        ];
+        $Validator = Validator::make($request->all(), [
+            'quantity' => 'required|integer|between:1,10',
+            'cart_id' => 'required|integer',
+            'product_id' => 'required|integer',
+        ], $message);
+
+        if($Validator->fails()){
+            return response($Validator->errors(), 400);
+        }
+
+        $validateData = $Validator->validate();
+
+        $product = Product::find($validateData['product_id']);
+        if(!$product->checkQuantity($validateData['quantity'])){
+            return response($product->title. '數量不足', 400);
+        }
+
+        $cart = Cart::find($validateData['cart_id']);
+        $result = $cart->cartItems()->create(['product_id' =>$product->id,
+                                              'quantity' => $validateData['quantity']]);
 
         return response()->json($result);
     }
@@ -74,12 +97,15 @@ class CartItemController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateCartItems $request, $id)
     {
         // 更新 cart_items 的數量
-        $form = $request->all();
-        DB::table('cart_items')->where('id', $id)->update(['quantity' => $form['quantity'],
-                                                           'updated_at' => now()]);
+        $form = $request->validated();
+
+        $items = CartItem::find($id);
+
+        $items->fill(['quantity' => $form['quantity']]);
+        $items->save();
         return response()->json(true);
     }
 
@@ -92,7 +118,7 @@ class CartItemController extends Controller
     public function destroy($id)
     {
         // 真刪除
-        DB::table('cart_items')->where('id', $id)->delete();
+        CartItem::find($id)->delete();
         return response()->json(true);
     }
 }
