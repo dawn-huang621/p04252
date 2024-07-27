@@ -119,5 +119,7 @@ class CartController extends Controller
      */
     public function destroy($id)
     {
+        CartItem::fid($id)->delete();
+        return response()->json(true);
     }
 }
