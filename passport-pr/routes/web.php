@@ -29,7 +29,7 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::get('logout', 'AuthController@logout');
     Route::resource('carts', 'CartController');
     Route::post('carts/checkout', 'CartController@checkout');
-    Route::resource('cart_items', 'CartItemController');
+    Route::resource('cart-items', 'CartItemController');
 });
 
 Route::get('/sendMail', function () {
