@@ -35,7 +35,10 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $this->getData();
+        $newData = $request->all();
+        $data->push(collect($newData));
+        return response($data);
     }
 
     /**
@@ -69,7 +72,11 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $form = $request->all();
+        $data = $this->getData();
+        $selectedData = $data->where('id', $id)->first();
+        $selectedData = $selectedData->merge($form);
+        return response($selectedData);
     }
 
     /**
@@ -80,6 +87,22 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $data = $this->getData();
+        $data = $data->filter(function ($product) use($id) {
+            return $product['id'] != $id;
+        });
+        return response($data->values());
+    }
+
+    public function getData()
+    {
+        return collect([
+            collect([ "id" => 0,
+                "title" => "test1",
+                "price" => 1000]),
+            collect([ "id" => 1,
+                "title" => "test2",
+                "price" => 2000]) 
+        ]);
     }
 }
