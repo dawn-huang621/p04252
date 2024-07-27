@@ -9,3 +9,6 @@
 Passport，JWT用來認證與產生認證token<br>
 middleWare 用來檢查是否登入<br>
 Seeder 快速建立產品<br>
+
+影片:
+https://www.youtube.com/watch?v=BZDTWVro930
